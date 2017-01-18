@@ -106,10 +106,10 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 			curl_setopt($curl, CURLOPT_TIMEOUT, 30);
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 			$response = curl_exec($curl);
-			echo file_put_contents("/var/www/clients/client2/web15/web/opencart/intangible-log.html","\nPayPal Response; " .$response ,FILE_APPEND);
+			
 			
 			if ($response == "VERIFIED"){
-				echo file_put_contents("/var/www/clients/client2/web15/web/opencart/intangible-log.html","\nIf routine confirms verified\n",FILE_APPEND);
+				
 				$this->load->model('checkout/order');
 				$order_info = $this->model_checkout_order->getOrder($order_id);
 				if ($order_info) {
@@ -125,9 +125,9 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 					}
 					}
 							
-				$MMurl = 'http://downloads.murphysmagic.com/api/AddOrder/';
+				$MMurl = '<VENDOR URL>';
 				$ch = curl_init($MMurl);
-				$ApiKey = '95b49a0664e3348860bc1a8a27d25bee';
+				$ApiKey = '<YOUR API KEY>';
 				curl_setopt($ch, CURLOPT_POST, 1);
 					$postVars = array(
 					    'APIKey' => $ApiKey,
@@ -142,8 +142,7 @@ class ControllerExtensionPaymentPPStandard extends Controller {
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				$MMresult = curl_exec($ch);	
 				
-				echo file_put_contents("/var/www/clients/client2/web15/web/opencart/intangible-log.html","\n----------------\n" ."\nFirst Name: " .$order_info['payment_firstname'] ."\nLast Name: " .$order_info['payment_lastname'] ."\nEmail Address: " .$order_info['email'] ."\nModel Number: " .$curl_string ."\nPayPal Response; " .$response ."\nMurphys Response: " .$MMresult ."\n----------------\n",FILE_APPEND);
-				}			
+			
 			
 			
 			if (!$response) {
