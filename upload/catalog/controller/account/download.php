@@ -1,12 +1,36 @@
 <?php
 class ControllerAccountDownload extends Controller {
 	public function index() {
+		
+		
 		if (!$this->customer->isLogged()) {
+			
+			
 			$this->session->data['redirect'] = $this->url->link('account/download', '', true);
 
 			$this->response->redirect($this->url->link('account/login', '', true));
 		}
-
+		$customer_email = $this->customer->getEmail();
+		//echo file_put_contents("/var/www/clients/client2/web15/web/download/intangible-log.html","customer is logged!\n" ."email address is :" .$customer_email ."\n",FILE_APPEND);
+		$MMurl = '<3rd_Party_url>';
+		$ch = curl_init($MMurl);
+		$ApiKey = '<API_KEY>';
+		curl_setopt($ch, CURLOPT_POST, 1);
+			$postVars = array(
+			    'APIKey' => $ApiKey,
+			    'Email' =>  $customer_email,
+							    
+			    );
+		$params = http_build_query($postVars);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$MMresult = curl_exec($ch);
+		$cust_id = $this->customer->getId();
+	//remove quotes from url
+		//$MMcleaned = substr($MMresult, 1, -1);
+		$MMresult = '<iframe src=' .$MMresult .'width="100%" height="1000" frameborder="0">';
+		//echo file_put_contents("/var/www/clients/client2/web15/web/download/intangible-log.html","\n===========\n" ."Murphys Says:" .$MMresult ."\n" ."customer id is :" .(int)$cust_id ."\n" ."email is :" .$customer_email ."\n",FILE_APPEND);
+		
 		$this->load->language('account/download');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -30,9 +54,11 @@ class ControllerAccountDownload extends Controller {
 
 		$this->load->model('account/download');
 
-		$data['heading_title'] = $this->language->get('heading_title');
+		//$data['heading_title'] = $this->language->get('heading_title');
+		$data['heading_title'] = $MMresult;
 
 		$data['text_empty'] = $this->language->get('text_empty');
+		
 
 		$data['column_order_id'] = $this->language->get('column_order_id');
 		$data['column_name'] = $this->language->get('column_name');
@@ -45,6 +71,8 @@ class ControllerAccountDownload extends Controller {
 		if (isset($this->request->get['page'])) {
 			$page = $this->request->get['page'];
 		} else {
+			
+			
 			$page = 1;
 		}
 
@@ -53,7 +81,7 @@ class ControllerAccountDownload extends Controller {
 		$download_total = $this->model_account_download->getTotalDownloads();
 
 		$results = $this->model_account_download->getDownloads(($page - 1) * $this->config->get($this->config->get('config_theme') . '_product_limit'), $this->config->get($this->config->get('config_theme') . '_product_limit'));
-
+		
 		foreach ($results as $result) {
 			if (file_exists(DIR_DOWNLOAD . $result['filename'])) {
 				$size = filesize(DIR_DOWNLOAD . $result['filename']);
@@ -107,10 +135,13 @@ class ControllerAccountDownload extends Controller {
 		$data['header'] = $this->load->controller('common/header');
 
 		$this->response->setOutput($this->load->view('account/download', $data));
+		
 	}
 
 	public function download() {
+		
 		if (!$this->customer->isLogged()) {
+			
 			$this->session->data['redirect'] = $this->url->link('account/download', '', true);
 
 			$this->response->redirect($this->url->link('account/login', '', true));
@@ -125,8 +156,10 @@ class ControllerAccountDownload extends Controller {
 		}
 
 		$download_info = $this->model_account_download->getDownload($download_id);
+		
 
 		if ($download_info) {
+			
 			$file = DIR_DOWNLOAD . $download_info['filename'];
 			$mask = basename($download_info['mask']);
 
@@ -156,4 +189,5 @@ class ControllerAccountDownload extends Controller {
 			$this->response->redirect($this->url->link('account/download', '', true));
 		}
 	}
+	
 }
