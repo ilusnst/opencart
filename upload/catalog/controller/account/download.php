@@ -11,9 +11,9 @@ class ControllerAccountDownload extends Controller {
 		}
 		$customer_email = $this->customer->getEmail();
 		//echo file_put_contents("/var/www/clients/client2/web15/web/download/intangible-log.html","customer is logged!\n" ."email address is :" .$customer_email ."\n",FILE_APPEND);
-		$MMurl = 'http://downloads.murphysmagic.com/api/GetLoggedInIFrameLink/';
+		$MMurl = '<Your 3rd Part vendor url>';
 		$ch = curl_init($MMurl);
-		$ApiKey = '95b49a0664e3348860bc1a8a27d25bee';
+		$ApiKey = '<your api key>';
 		curl_setopt($ch, CURLOPT_POST, 1);
 			$postVars = array(
 			    'APIKey' => $ApiKey,
